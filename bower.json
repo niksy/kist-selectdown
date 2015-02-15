@@ -1,0 +1,39 @@
+{
+  "name": "kist-selectdown",
+  "version": "0.0.0",
+  "description": "Select with customizable menu.",
+  "authors": [
+    "Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/)"
+  ],
+  "license": "MIT",
+  "main": "dist/kist-selectdown.js",
+  "dependencies": {
+    "jquery": "~1.11.2"
+  },
+  "devdependencies": {
+    "jquery": "1"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src",
+    "lib",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "homepage": "https://github.com/niksy/kist-selectdown",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "kist",
+    "select",
+    "dropdown",
+    "selectmenu",
+    "browserify"
+  ]
+}

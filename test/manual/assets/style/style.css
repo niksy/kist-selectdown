@@ -1,0 +1,18 @@
+.kist-Selectdown-optionList {
+	background:pink;
+}
+.kist-Selectdown-optionList.is-hidden {
+	opacity:0.5;
+	pointer-events:none;
+}
+
+.kist-Selectdown-optionItem.is-active {
+	background:green;
+}
+.kist-Selectdown-optionItem.is-focused {
+	outline:2px dashed red;
+}
+
+.kist-Selectdown-select:focus {
+	background:yellow;
+}

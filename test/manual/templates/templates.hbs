@@ -1,0 +1,26 @@
+{{>top title="Templates"}}
+
+	<select name="select" id="select">
+		<option value="1">Foo</option>
+		<option value="2">Bar</option>
+		<option value="3">Baz</option>
+		<option value="4">Bad</option>
+		<option value="5">Bag</option>
+	</select>
+
+	<script>
+
+		var el = $('select');
+
+		el.selectdown({
+			templates: {
+				option: function ( data ) {
+					console.log(arguments);
+					return '<b>' + data.content + ', <u>' + data.value + '</u></b>';
+				}
+			}
+		});
+
+	</script>
+
+{{>bottom}}
