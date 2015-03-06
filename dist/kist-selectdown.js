@@ -1,4 +1,4 @@
-/*! kist-selectdown 0.1.1 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-selectdown 0.1.2 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(5);
@@ -215,6 +215,7 @@ $.extend(Selectdown.prototype, {
 			}
 		}
 
+		this.$select[!bool ? 'removeClass' : 'addClass'](this.options.classes.isActive);
 		this.$optionList[bool ? 'removeClass' : 'addClass'](this.options.classes.isHidden);
 
 	},
@@ -353,8 +354,8 @@ function globalEventsHandler ( e ) {
 
 	if (
 		keycode === key.escape ||
-		($target.is(this.$select) && $target.closest(this.$wrapper).length === 0) ||
-		(!$target.is(this.$select) && $target.closest(getClassSelector(this.options.classes.option)).length === 0)
+		($target.closest(this.$select) && $target.closest(this.$wrapper).length === 0) ||
+		(!$target.closest(this.$select) && $target.closest(getClassSelector(this.options.classes.option)).length === 0)
 	) {
 		this.displayOptions(false);
 	}
