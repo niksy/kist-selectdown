@@ -12,6 +12,10 @@
 
 		var el = $('select');
 
+		el.on('change', function () {
+			console.log('original change event');
+		});
+
 		el.on('selectdowncreate', function () {
 			console.info('create');
 			console.info(arguments);
