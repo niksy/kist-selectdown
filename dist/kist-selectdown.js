@@ -1,4 +1,4 @@
-/*! kist-selectdown 0.1.2 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-selectdown 0.1.3 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(5);
@@ -339,6 +339,7 @@ module.exports = {
 },{}],3:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var meta = require(9);
 var key = require(8);
 var getClassSelector = require(4);
 
@@ -393,10 +394,12 @@ module.exports = {
 	setupEvents: function () {
 
 		this.$el
-			.on('change' + this.ens, $.proxy(function ( e ) {
+			.on('change' + this.ens, $.proxy(function ( e, type ) {
 
-				this.renderSelect(this.getContent());
-				this.setActiveOption(this.getValue());
+				if ( type !== meta.name + 'syntheticChange' ) {
+					this.renderSelect(this.getContent());
+					this.setActiveOption(this.getValue());
+				}
 
 			}, this));
 
@@ -414,6 +417,7 @@ module.exports = {
 
 			this.setValue(val);
 			this.displayOptions(false);
+			this.$el.trigger('change', [meta.name + 'syntheticChange']);
 
 		}, this));
 
@@ -434,7 +438,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"4":4,"8":8}],4:[function(require,module,exports){
+},{"4":4,"8":8,"9":9}],4:[function(require,module,exports){
 /**
  * @param  {String} className
  *
