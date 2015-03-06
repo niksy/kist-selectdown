@@ -14,6 +14,10 @@
 
 		el.selectdown({
 			templates: {
+				select: function ( data ) {
+					console.log(arguments);
+					return '<b>' + data.content + ', <u>' + data.value + '</u></b>';
+				},
 				option: function ( data ) {
 					console.log(arguments);
 					return '<b>' + data.content + ', <u>' + data.value + '</u></b>';
