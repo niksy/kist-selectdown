@@ -1,15 +1,15 @@
-/*! kist-selectdown 0.1.3 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-selectdown 0.1.4 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
-require(5);
+require(6);
 
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var meta = require(9);
+var meta = require(11);
 var dom = require(2);
-var events = require(3);
-var instance = require(7);
-var getClassSelector = require(4);
-var emit = require(10)(meta.name);
+var events = require(4);
+var instance = require(8);
+var getClassSelector = require(5);
+var emit = require(3)(meta.name);
 
 /**
  * @param  {Number|String} val
@@ -282,7 +282,7 @@ $.extend(Selectdown.prototype, {
 }, dom, events, instance);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"10":10,"2":2,"3":3,"4":4,"5":5,"7":7,"9":9}],2:[function(require,module,exports){
+},{"11":11,"2":2,"3":3,"4":4,"5":5,"6":6,"8":8}],2:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -315,6 +315,7 @@ module.exports = {
 		this.renderOptions();
 		this.renderSelect(this.getContent());
 		this.setActiveOption(this.getValue(), true);
+		this.setFocusedOption(this.getValue());
 
 		// Go!
 		this.$wrapper
@@ -338,10 +339,40 @@ module.exports = {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
 (function (global){
+/* jshint maxparams:false */
+
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var meta = require(9);
-var key = require(8);
-var getClassSelector = require(4);
+
+/**
+ * @param  {String} name
+ *
+ * @return {Function}
+ */
+module.exports = function ( name ) {
+
+	/**
+	 * @param  {Object}   ctx
+	 * @param  {String}   eventName
+	 * @param  {Array}    data
+	 * @param  {jQuery}   triggerEl
+	 */
+	return function ( ctx, eventName, data, triggerEl ) {
+		var el = (ctx.dom && ctx.dom.el) || ctx.$el || $({});
+		if ( ctx.options[eventName] ) {
+			ctx.options[eventName].apply((el.length === 1 ? el[0] : el.toArray()), data);
+		}
+		(triggerEl || el).trigger(((name || '') + eventName).toLowerCase(), data);
+	};
+
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
+(function (global){
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var meta = require(11);
+var key = require(10);
+var getClassSelector = require(5);
 
 /**
  * @this {Selectdown}
@@ -372,14 +403,16 @@ function keyboardNavigation ( e ) {
 
 	var keycode = e.which;
 
+	// Only navigate if list is opened
+	if ( this.$optionList.hasClass(this.options.classes.isHidden) ) {
+		return;
+	}
+
 	switch ( keycode ) {
 
 		case key.up:
 		case key.down:
-			// Only navigate if list is opened when pressing up/down button
-			if ( !this.$optionList.hasClass(this.options.classes.isHidden) ) {
-				this.navigate(keycode === key.down ? 'down' : 'up');
-			}
+			this.navigate(keycode === key.down ? 'down' : 'up');
 			break;
 
 		case key.enter:
@@ -438,7 +471,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"4":4,"8":8,"9":9}],4:[function(require,module,exports){
+},{"10":10,"11":11,"5":5}],5:[function(require,module,exports){
 /**
  * @param  {String} className
  *
@@ -448,10 +481,10 @@ module.exports = function ( className ) {
 	return '.' + className.split(' ').join('.');
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var meta = require(9);
+var meta = require(11);
 
 var valHooks = $.valHooks;
 var propHooks = $.propHooks;
@@ -487,12 +520,12 @@ propHooks.value = hooks;
 propHooks.disabled = hooks;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"9":9}],6:[function(require,module,exports){
+},{"11":11}],7:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var Ctor = require(1);
-var meta = require(9);
-var isPublicMethod = require(11)(meta.publicMethods);
+var meta = require(11);
+var isPublicMethod = require(9)(meta.publicMethods);
 
 /**
  * @param  {Object|String} options
@@ -519,10 +552,10 @@ var plugin = $.fn[meta.name] = module.exports = function ( options ) {
 plugin.defaults = Ctor.prototype.defaults;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"1":1,"11":11,"9":9}],7:[function(require,module,exports){
+},{"1":1,"11":11,"9":9}],8:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var meta = require(9);
+var meta = require(11);
 var instance = 0;
 
 module.exports = {
@@ -536,56 +569,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"9":9}],8:[function(require,module,exports){
-module.exports = {
-	enter: 13,
-	escape: 27,
-	up: 38,
-	down: 40
-};
-
-},{}],9:[function(require,module,exports){
-module.exports = {
-	name: 'selectdown',
-	ns: {
-		htmlClass: 'kist-Selectdown',
-		event: '.kist.selectdown',
-		dataAttr: 'kist-selectdown'
-	},
-	publicMethods: ['destroy','refresh']
-};
-
-},{}],10:[function(require,module,exports){
-(function (global){
-/* jshint maxparams:false */
-
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-
-/**
- * @param  {String} name
- *
- * @return {Function}
- */
-module.exports = function ( name ) {
-
-	/**
-	 * @param  {Object}   ctx
-	 * @param  {String}   eventName
-	 * @param  {Array}    data
-	 * @param  {jQuery}   triggerEl
-	 */
-	return function ( ctx, eventName, data, triggerEl ) {
-		var el = (ctx.dom && ctx.dom.el) || ctx.$el || $({});
-		if ( ctx.options[eventName] ) {
-			ctx.options[eventName].apply((el.length === 1 ? el[0] : el.toArray()), data);
-		}
-		(triggerEl || el).trigger(((name || '') + eventName).toLowerCase(), data);
-	};
-
-};
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{"11":11}],9:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -608,4 +592,23 @@ module.exports = function ( methods ) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[6]);
+},{}],10:[function(require,module,exports){
+module.exports = {
+	enter: 13,
+	escape: 27,
+	up: 38,
+	down: 40
+};
+
+},{}],11:[function(require,module,exports){
+module.exports = {
+	name: 'selectdown',
+	ns: {
+		htmlClass: 'kist-Selectdown',
+		event: '.kist.selectdown',
+		dataAttr: 'kist-selectdown'
+	},
+	publicMethods: ['destroy','refresh']
+};
+
+},{}]},{},[7]);
