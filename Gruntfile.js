@@ -85,7 +85,7 @@ module.exports = function ( grunt ) {
 		connect: {
 			test:{
 				options: {
-					open:true
+					open: true
 				}
 			}
 		},

@@ -5,11 +5,8 @@
   "author": "Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/)",
   "license": "MIT",
   "main": "lib/index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test --watch"
   },
   "dependencies": {
     "jquery": "^1.11.2",
