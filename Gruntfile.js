@@ -45,20 +45,6 @@ module.exports = function ( grunt ) {
 			}
 		},
 
-		jscs: {
-			main: {
-				options: {
-					config: '.jscsrc'
-				},
-				files: {
-					src: [
-						'<%= pkg.main %>',
-						'lib/**/*.js'
-					]
-				}
-			}
-		},
-
 		jshint: {
 			main: {
 				options: {
@@ -152,7 +138,7 @@ module.exports = function ( grunt ) {
 		grunt.task.run(tasks);
 	});
 
-	grunt.registerTask('stylecheck', ['jshint:main', 'jscs:main']);
+	grunt.registerTask('stylecheck', ['jshint:main']);
 	grunt.registerTask('default', ['stylecheck', 'browserify:standalone', 'concat', 'uglify']);
 	grunt.registerTask('releasePatch', ['bump-only:patch', 'default', 'bump-commit']);
 	grunt.registerTask('releaseMinor', ['bump-only:minor', 'default', 'bump-commit']);
