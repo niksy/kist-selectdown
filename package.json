@@ -9,8 +9,7 @@
     "test": "grunt test --watch"
   },
   "dependencies": {
-    "jquery": "^1.11.2",
-    "kist-toolbox": "^0.3.5"
+    "jquery": "^1.11.2"
   },
   "devDependencies": {
     "browserify-shim": "^3.8.0",
