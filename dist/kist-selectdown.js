@@ -1,4 +1,4 @@
-/*! kist-selectdown 0.1.4 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-selectdown 0.1.5 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(6);
@@ -104,12 +104,22 @@ $.extend(Selectdown.prototype, {
 	},
 
 	/**
+	 * Disable select button
+	 *
 	 * @param  {Boolean} state
 	 */
 	disableSelect: function ( state ) {
-
 		this.$select.prop('disabled', state);
+	},
 
+	/**
+	 * Disable option button
+	 *
+	 * @param  {jQuery} $option
+	 * @param  {Boolean} state
+	 */
+	disableOption: function ( $option, state ) {
+		$option.prop('disabled', state);
 	},
 
 	/**
@@ -144,6 +154,9 @@ $.extend(Selectdown.prototype, {
 			// Adding this through mapping object cast value to integer
 			$option.data('val', $el.val());
 
+			// If this option is disabled, we should render it like that
+			this.disableOption($option, $el.prop('disabled'));
+
 			$option.appendTo($optionItem);
 
 			return $optionItem.get();
@@ -155,15 +168,24 @@ $.extend(Selectdown.prototype, {
 	},
 
 	/**
+	 * @param  {Number|String} val
+	 *
+	 * @return {jQuery}
+	 */
+	getOption: function ( val ) {
+		var fn = filterOptions(val);
+		return this.$optionItem.filter($.proxy(fn, this));
+	},
+
+	/**
 	 * @param {Number|String} val
 	 * @param {Boolean} preventEmit
 	 */
 	setActiveOption: function ( val, preventEmit ) {
 
 		var classes = [this.options.classes.isActive, this.options.classes.isFocused].join(' ');
-		var fn = filterOptions(val);
 
-		this.$activeOptionItem = this.$optionItem.filter($.proxy(fn, this));
+		this.$activeOptionItem = this.getOption(val);
 
 		this.$optionItem.removeClass(classes);
 		this.$activeOptionItem.addClass(classes);
@@ -180,9 +202,8 @@ $.extend(Selectdown.prototype, {
 	setFocusedOption: function ( val ) {
 
 		var classes = [this.options.classes.isFocused].join(' ');
-		var fn = filterOptions(val);
 
-		this.$focusedOptionItem = this.$optionItem.filter($.proxy(fn, this));
+		this.$focusedOptionItem = this.getOption(val);
 
 		this.$optionItem.removeClass(classes);
 		this.$focusedOptionItem.addClass(classes);
@@ -228,7 +249,7 @@ $.extend(Selectdown.prototype, {
 		var $currentOptionItem = this.$optionList.children(getClassSelector(this.options.classes.isFocused));
 		var $optionItems = this.$optionList.children();
 		var position = $optionItems.index($currentOptionItem);
-		var $newOptionItem;
+		var $newOptionItem, $newOptionToggler;
 
 		position = direction === 'down' ? ++position : --position;
 
@@ -240,13 +261,22 @@ $.extend(Selectdown.prototype, {
 		}
 
 		$newOptionItem = $optionItems.eq(position);
+		$newOptionToggler = this.getOptionToggler($newOptionItem);
 
-		this.setFocusedOption(this.getOptionToggler($newOptionItem).data('val'));
+
+		this.setFocusedOption($newOptionToggler.data('val'));
+
+		// If this option is disabled, navigate again in the same direction
+		// until enabled one is found
+		if ( $newOptionToggler.prop('disabled') ) {
+			this.navigate(direction);
+		}
 
 	},
 
 	refresh: function () {
 
+		this.assignInstanceToChildren();
 		this.renderOptions();
 		this.renderSelect(this.getContent());
 		this.setActiveOption(this.getValue());
@@ -285,6 +315,7 @@ $.extend(Selectdown.prototype, {
 },{"11":11,"2":2,"3":3,"4":4,"5":5,"6":6,"8":8}],2:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var meta = require(11);
 
 module.exports = {
 
@@ -317,6 +348,9 @@ module.exports = {
 		this.setActiveOption(this.getValue(), true);
 		this.setFocusedOption(this.getValue());
 
+		// If select is disabled at start, we should render it like that
+		this.disableSelect(this.$el.prop('disabled'));
+
 		// Go!
 		this.$wrapper
 			.insertBefore(this.$el)
@@ -337,7 +371,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{"11":11}],3:[function(require,module,exports){
 (function (global){
 /* jshint maxparams:false */
 
@@ -493,12 +527,19 @@ var hooks = {
 	set: function ( el, val, prop ) {
 
 		var self = $.data(el, meta.name);
+		var $el;
 
 		if ( self ) {
 
 			if ( prop === 'disabled' ) {
 
-				self.disableSelect(val);
+				$el = $(el);
+
+				if ( $el.is('select') ) {
+					self.disableSelect(val);
+				} else {
+					self.disableOption(self.getOptionToggler(self.getOption(el.value)), val);
+				}
 
 			} else {
 
@@ -562,9 +603,17 @@ module.exports = {
 	setupInstance: function () {
 		this.uid = instance++;
 		this.ens = meta.ns.event + '.' + this.uid;
+		this.assignInstanceToChildren();
 	},
 	destroyInstance: function () {
 		$.removeData(this.element, meta.name);
+		this.removeInstanceFromChildren();
+	},
+	assignInstanceToChildren: function () {
+		$(this.element).children('option').data(meta.name, this);
+	},
+	removeInstanceFromChildren: function () {
+		$(this.element).children('option').removeData(meta.name);
 	}
 };
 
