@@ -1,0 +1,67 @@
+{{>top title="Disabled"}}
+
+	<select name="select" id="select">
+		<option value="1">Foo</option>
+		<option value="2" disabled="disabled">Bar</option>
+		<option value="3">Baz</option>
+		<option value="4">Bad</option>
+		<option value="5">Bag</option>
+	</select>
+
+	<button type="button" class="toggle-second-option">Toggle 2. option disabled state</button>
+	<button type="button" class="toggle-fourth-option">Toggle 4. option disabled state</button>
+	<button type="button" class="toggle-select">Toggle select disabled state</button>
+
+	<script>
+
+		var el = $('select');
+
+		$('.toggle-second-option').on('click', function () {
+			var option = el.children('option').eq(1);
+			option.prop('disabled', !option.prop('disabled'));
+		});
+
+		$('.toggle-fourth-option').on('click', function () {
+			var option = el.children('option').eq(3);
+			option.prop('disabled', !option.prop('disabled'));
+		});
+
+		$('.toggle-select').on('click', function () {
+			el.prop('disabled', !el.prop('disabled'));
+		});
+
+		el.on('change', function () {
+			console.log('original change event');
+		});
+
+		el.on('selectdowncreate', function () {
+			console.info('create');
+			console.info(arguments);
+		});
+
+		el.on('selectdownselect', function () {
+			console.info('select');
+			console.info(arguments);
+		});
+
+		el.on('selectdownopen', function () {
+			console.info('open');
+			console.info(arguments);
+		});
+
+		el.on('selectdownclose', function () {
+			console.info('close');
+			console.info(arguments);
+		});
+
+		el.selectdown({
+			select: function () {
+				console.log('select from options');
+				console.log(arguments);
+			}
+		});
+
+	</script>
+	</script>
+
+{{>bottom}}
