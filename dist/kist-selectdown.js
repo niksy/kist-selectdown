@@ -1,9 +1,9 @@
-/*! kist-selectdown 0.1.5 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-selectdown 0.2.0 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2016 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(6);
 
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var meta = require(11);
 var dom = require(2);
 var events = require(4);
@@ -191,7 +191,7 @@ $.extend(Selectdown.prototype, {
 		this.$activeOptionItem.addClass(classes);
 
 		if ( !preventEmit ) {
-			emit(this, 'select', [this.$activeOptionItem, val]);
+			emit(this, 'select', [this.$activeOptionItem, val, this.getOriginalOption(val)]);
 		}
 
 	},
@@ -314,7 +314,7 @@ $.extend(Selectdown.prototype, {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11,"2":2,"3":3,"4":4,"5":5,"6":6,"8":8}],2:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var meta = require(11);
 
 module.exports = {
@@ -375,7 +375,7 @@ module.exports = {
 (function (global){
 /* jshint maxparams:false */
 
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 /**
  * @param  {String} name
@@ -403,7 +403,7 @@ module.exports = function ( name ) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var meta = require(11);
 var key = require(10);
 var getClassSelector = require(5);
@@ -517,7 +517,7 @@ module.exports = function ( className ) {
 
 },{}],6:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var meta = require(11);
 
 var valHooks = $.valHooks;
@@ -563,7 +563,7 @@ propHooks.disabled = hooks;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11}],7:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var Ctor = require(1);
 var meta = require(11);
 var isPublicMethod = require(9)(meta.publicMethods);
@@ -595,7 +595,7 @@ plugin.defaults = Ctor.prototype.defaults;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"1":1,"11":11,"9":9}],8:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var meta = require(11);
 var instance = 0;
 
@@ -620,7 +620,7 @@ module.exports = {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11}],9:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 /**
  * @param  {Array} methods
