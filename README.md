@@ -84,7 +84,7 @@ Callback to run when select menu is closed.
 ###### select
 
 Type: `Function`  
-Arguments: [Current item, Current item value]  
+Arguments: [Current replaced item, Current item value, Original option item]  
 Event: `selectdownselect`
 
 Callback to run on option select.
