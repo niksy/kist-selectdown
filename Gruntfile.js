@@ -31,20 +31,6 @@ module.exports = function ( grunt ) {
 			}
 		},
 
-		bump: {
-			options: {
-				files: ['package.json', 'bower.json'],
-				updateConfigs: ['pkg'],
-				commit: true,
-				commitMessage: 'Release %VERSION%',
-				commitFiles: ['-a'],
-				createTag: true,
-				tagName: '%VERSION%',
-				tagMessage: '',
-				push: false
-			}
-		},
-
 		jshint: {
 			main: {
 				options: {
@@ -60,7 +46,8 @@ module.exports = function ( grunt ) {
 		browserify: {
 			standalone: {
 				options: {
-					plugin: ['bundle-collapser/plugin']
+					plugin: ['bundle-collapser/plugin'],
+					transform: [['browserify-shim', { global: true }]]
 				},
 				files: {
 					'compiled/<%= pkg.main %>': ['<%= pkg.main %>']
@@ -126,6 +113,17 @@ module.exports = function ( grunt ) {
 			}
 		},
 
+		'update_json': {
+			options: {
+				indent: '  '
+			},
+			bower: {
+				src: 'package.json',
+				dest: 'bower.json',
+				fields: 'version'
+			}
+		}
+
 	});
 
 	require('load-grunt-tasks')(grunt);
@@ -138,10 +136,7 @@ module.exports = function ( grunt ) {
 		grunt.task.run(tasks);
 	});
 
-	grunt.registerTask('stylecheck', ['jshint:main']);
-	grunt.registerTask('default', ['stylecheck', 'browserify:standalone', 'concat', 'uglify']);
-	grunt.registerTask('releasePatch', ['bump-only:patch', 'default', 'bump-commit']);
-	grunt.registerTask('releaseMinor', ['bump-only:minor', 'default', 'bump-commit']);
-	grunt.registerTask('releaseMajor', ['bump-only:major', 'default', 'bump-commit']);
+	grunt.registerTask('lint', ['jshint:main']);
+	grunt.registerTask('build', ['lint', 'browserify:standalone', 'concat', 'uglify']);
 
 };

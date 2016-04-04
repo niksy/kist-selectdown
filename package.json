@@ -6,17 +6,19 @@
   "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
-    "test": "grunt test --watch"
+    "version": "grunt update_json && grunt build && git add -A",
+    "test": "bower install && grunt test"
   },
   "dependencies": {
     "jquery": "^1.11.2"
   },
   "devDependencies": {
+    "bower": "^1.7.7",
     "browserify-shim": "^3.8.0",
     "bundle-collapser": "^1.1.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.5.0",
-    "grunt-bump": "^0.3.0",
+    "grunt-cli": "^1.2.0",
     "grunt-compile-handlebars": "^1.0.0",
     "grunt-concurrent": "^1.0.0",
     "grunt-contrib-concat": "^0.4.0",
@@ -25,12 +27,8 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.8.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-update-json": "^0.2.2",
     "load-grunt-tasks": "^0.6.0"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
   },
   "browserify-shim": {
     "jquery": "global:$"
