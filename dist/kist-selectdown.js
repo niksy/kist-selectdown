@@ -1,4 +1,4 @@
-/*! kist-selectdown 0.2.0 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2016 | License: MIT */
+/*! kist-selectdown 0.2.1 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2016 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(6);
@@ -147,7 +147,9 @@ $.extend(Selectdown.prototype, {
 				'class': this.options.classes.option,
 				html: this.options.templates.option.call(this.element, {
 					content: $el.html(),
-					value: $el.val()
+					value: $el.val(),
+					selected: $el.prop('selected'),
+					disabled: $el.prop('disabled')
 				})
 			});
 
