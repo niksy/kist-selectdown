@@ -1,9 +1,9 @@
-/*! kist-selectdown 0.2.1 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2016 | License: MIT */
+/*! kist-selectdown 0.2.2 - Select with customizable menu. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2016 | License: MIT */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 require(6);
 
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var meta = require(11);
 var dom = require(2);
 var events = require(4);
@@ -138,13 +138,17 @@ $.extend(Selectdown.prototype, {
 		this.$optionItem = this.$el.children().map($.proxy(function ( index, el ) {
 
 			var $el = $(el);
+			var elId = meta.ns.htmlClass + '-option-' + this.uid + '-' + index;
 
 			var $optionItem = $('<li />', {
 				'class': this.options.classes.optionItem
 			});
 			var $option = $('<button />', {
+				id: elId,
+				tabindex: -1,
 				type: 'button',
 				'class': this.options.classes.option,
+				role: 'option',
 				html: this.options.templates.option.call(this.element, {
 					content: $el.html(),
 					value: $el.val(),
@@ -191,6 +195,7 @@ $.extend(Selectdown.prototype, {
 
 		this.$optionItem.removeClass(classes);
 		this.$activeOptionItem.addClass(classes);
+		this.$wrapper.attr('aria-activedescendant', this.getOptionToggler(this.$activeOptionItem).attr('id'));
 
 		if ( !preventEmit ) {
 			emit(this, 'select', [this.$activeOptionItem, val, this.getOriginalOption(val)]);
@@ -231,10 +236,12 @@ $.extend(Selectdown.prototype, {
 		if ( bool ) {
 			if ( isHidden ) {
 				emit(this, 'open', [this.$el, this.$select]);
+				this.$optionList.attr('aria-expanded', true);
 			}
 		} else {
 			if ( !isHidden ) {
 				emit(this, 'close', [this.$el, this.$select]);
+				this.$optionList.attr('aria-expanded', false);
 			}
 		}
 
@@ -316,7 +323,7 @@ $.extend(Selectdown.prototype, {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11,"2":2,"3":3,"4":4,"5":5,"6":6,"8":8}],2:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var meta = require(11);
 
 module.exports = {
@@ -325,24 +332,39 @@ module.exports = {
 
 	setupDom: function () {
 
+		var listId = meta.ns.htmlClass + '-list-' + this.uid;
+
 		this.$el = $(this.element);
 
-		this.$el.addClass(this.options.classes.originalSelect);
+		this.$el
+			.addClass(this.options.classes.originalSelect)
+			.attr({
+				tabindex: -1,
+				'aria-autocomplete': 'list',
+				'aria-owns': listId,
+				'aria-readonly': true
+			});
 
 		// Setup wrapper
 		this.$wrapper = $('<div />', {
-			'class': this.options.classes.wrapper
+			'class': this.options.classes.wrapper,
+			role: 'combobox',
+			'aria-activedescendant': ''
 		});
 
 		// Setup select
 		this.$select = $('<button />', {
 			type: 'button',
-			'class': this.options.classes.select
+			'class': this.options.classes.select,
+			'aria-controls': listId
 		});
 
 		// Setup option list
 		this.$optionList = $('<ul />', {
-			'class': [this.options.classes.optionList, this.options.classes.isHidden].join(' ')
+			id: listId,
+			'class': [this.options.classes.optionList, this.options.classes.isHidden].join(' '),
+			role: 'listbox',
+			'aria-expanded': false
 		});
 
 		this.renderOptions();
@@ -364,7 +386,8 @@ module.exports = {
 
 		this.$el
 			.removeClass(this.options.classes.originalSelect)
-			.insertBefore(this.$wrapper);
+			.insertBefore(this.$wrapper)
+			.removeAttr('aria-autocomplete aria-owns aria-readonly tabindex');
 
 		this.$wrapper.remove();
 
@@ -377,7 +400,7 @@ module.exports = {
 (function (global){
 /* jshint maxparams:false */
 
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 /**
  * @param  {String} name
@@ -405,7 +428,7 @@ module.exports = function ( name ) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var meta = require(11);
 var key = require(10);
 var getClassSelector = require(5);
@@ -519,7 +542,7 @@ module.exports = function ( className ) {
 
 },{}],6:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var meta = require(11);
 
 var valHooks = $.valHooks;
@@ -565,7 +588,7 @@ propHooks.disabled = hooks;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11}],7:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var Ctor = require(1);
 var meta = require(11);
 var isPublicMethod = require(9)(meta.publicMethods);
@@ -597,7 +620,7 @@ plugin.defaults = Ctor.prototype.defaults;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"1":1,"11":11,"9":9}],8:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var meta = require(11);
 var instance = 0;
 
@@ -622,7 +645,7 @@ module.exports = {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"11":11}],9:[function(require,module,exports){
 (function (global){
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 /**
  * @param  {Array} methods
