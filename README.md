@@ -155,6 +155,12 @@ Destroy plugin instance.
 $('select').selectdown('destroy');
 ```
 
+## Testing
+
+Currently, only manual tests are available.
+
+Run `npm test -- --watch` and open <http://0.0.0.0:8000/compiled/test/manual/> in your browser.
+
 ## Browser support
 
 Tested in IE8+ and all modern browsers.
